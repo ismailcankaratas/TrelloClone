@@ -26,18 +26,16 @@ export const listSlice = createSlice({
     initialState,
     reducers: {
         setList: (state, action) => {
+            console.log(action.payload)
             state.lists = action.payload;
         },
         dragHappened: (state, action) => {
             const { droppableIdStart, droppableIdEnd, droppableIndexStart, droppableIndexEnd, draggableId, type } = action.payload;
 
             if (type === "list") {
-                const newList = [...state.lists];
-                const list = newList.splice(droppableIndexStart, 1);
-                newList.splice(droppableIndexEnd, 0, ...list)
-                setList(JSON.parse(JSON.stringify(newList)));
-                localStorage.setItem("localList", JSON.stringify(newList))
-                console.log(JSON.parse(JSON.stringify(newList)))
+                const list = state.lists.splice(droppableIndexStart, 1);
+                state.lists.splice(droppableIndexEnd, 0, ...list)
+                localStorage.setItem("localList", JSON.stringify(state.lists))
                 return
             }
 
