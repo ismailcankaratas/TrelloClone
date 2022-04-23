@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ActionButton from './ActionButton';
 import Task from './Task';
 import { BiDotsHorizontalRounded } from 'react-icons/bi';
@@ -10,6 +10,9 @@ import { useDispatch } from 'react-redux';
 import { Draggable } from 'react-beautiful-dnd';
 
 const List = ({ title, tasks, listId, index }) => {
+    const [formOpen, setFormOpen] = useState(false);
+    const [inputChange, setInputChange] = useState(null);
+
     const dispatch = useDispatch();
 
     function listDelete(listId) {
@@ -18,6 +21,41 @@ const List = ({ title, tasks, listId, index }) => {
         newLocalList.splice(newLocalList.indexOf(list), 1)
         localStorage.setItem("localList", JSON.stringify(newLocalList))
         dispatch(setList(newLocalList))
+    }
+    function handleEditTitle(listId, text) {
+        const localList = JSON.parse(localStorage.getItem("localList"));
+        const currentList = localList.find(list => list.id == listId);
+        if (!text) {
+            return setFormOpen(false)
+        }
+        const newLocalList = localList.map(list => {
+            if (list.id == listId) {
+                return {
+                    ...currentList,
+                    title: text
+                }
+            } else {
+                return list
+            }
+        })
+        localStorage.setItem("localList", JSON.stringify(newLocalList))
+        dispatch(setList(newLocalList))
+        return setFormOpen(false)
+    }
+    function renderForm(listId) {
+        const localList = JSON.parse(localStorage.getItem("localList"));
+        const listTitle = localList.find(list => list.id == listId).title;
+        return (
+            <input
+                type="text"
+                placeholder="Liste başlığı girin..."
+                autoFocus
+                onBlur={() => handleEditTitle(listId, inputChange)}
+                onChange={(e) => setInputChange(e.target.value)}
+                className=" w-72 m-2 mt-3 ml-0 p-1 py-0 rounded resize-none outline-none border-2 border-[#0079bf]"
+                defaultValue={listTitle}
+            />
+        )
     }
     return (
         <Draggable draggableId={`${listId}`} index={index}>
@@ -29,8 +67,17 @@ const List = ({ title, tasks, listId, index }) => {
                     <Droppable droppableId={`${listId}`}>
                         {provided => (
                             <div {...provided.droppableProps} ref={provided.innerRef}>
-                                <h2 className='flex items-center justify-between font-semibold m-2 pt-2 text-[#172b4d]'>
-                                    {title}
+                                <div className='flex items-center justify-between'>
+                                    {
+                                        formOpen ? renderForm(listId)
+                                            :
+                                            <h2
+                                                onClick={() => setFormOpen(true)}
+                                                className='cursor-pointer font-semibold m-2 pt-2 text-[#172b4d]'>
+                                                {title}
+                                            </h2>
+                                    }
+
                                     <Menu as="div">
                                         <Menu.Button className='hover:bg-[#00000014] rounded p-2'>
                                             <BiDotsHorizontalRounded />
@@ -61,10 +108,10 @@ const List = ({ title, tasks, listId, index }) => {
                                 </Menu.Item> */}
                                         </Menu.Items >
                                     </Menu >
-                                </h2 >
+                                </div>
                                 {
                                     tasks.map((task, index) => (
-                                        <Task text={task.text} id={task.id} index={index} key={`${task.id}`} />
+                                        <Task text={task.text} id={task.id} listId={listId} index={index} key={`${task.id}`} />
                                     ))
                                 }
                                 < ActionButton listId={listId} />

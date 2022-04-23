@@ -26,7 +26,6 @@ export const listSlice = createSlice({
     initialState,
     reducers: {
         setList: (state, action) => {
-            console.log(action.payload)
             state.lists = action.payload;
         },
         dragHappened: (state, action) => {
