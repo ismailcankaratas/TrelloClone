@@ -9,4 +9,8 @@
         @apply h-[100vh];
         font-family: -apple-system, Roboto;
     }
+
+    .task:hover .taskEdit {
+        @apply opacity-100;
+    }
 }

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { AiOutlineClose } from 'react-icons/ai'
 import { GrAdd } from 'react-icons/gr'
 import TextArea from 'react-textarea-autosize';
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setList } from '../redux/features/listSlice';
 import { v4 as uuid } from 'uuid';
 
@@ -95,7 +95,6 @@ const ActionButton = ({ lists, listId }) => {
                             onChange={(e) => setInputChange(e.target.value)}
                             className="min-h-[5rem] w-full p-2 rounded resize-none outline-none border-none"
                             value={(inputChange == null) ? "" : inputChange}
-
                         />
                 }
 
