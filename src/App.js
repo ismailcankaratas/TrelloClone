@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import ActionButton from "./components/ActionButton";
 import List from "./components/List";
-import { setList } from "./redux/features/listSlice";
+import { setList, sort } from "./redux/features/listSlice";
 import { DragDropContext } from 'react-beautiful-dnd';
 
 function App() {
@@ -18,24 +18,34 @@ function App() {
   }
 
 
-  const onDragEnd = () => {
-    // TODO yeniden sıralama mantığı
+  const onDragEnd = (result) => {
+    if (!result.destination) {
+      return;
+    }
+    dispatch(sort(
+      result.source.droppableId,
+      result.destination.droppableId,
+      result.source.index,
+      result.destination.index,
+      result.draggableId
+    ))
   }
 
   return (
-    <div className="flex flex-wrap">
-      <DragDropContext onDragEnd={onDragEnd}>
+    <DragDropContext onDragEnd={onDragEnd}>
+      <div className="flex flex-wrap">
         {
           lists.map(list => (
-            <List title={list.title} tasks={list.tasks} listId={list.id} key={"list-" + list.id} />
+            <List title={list.title} tasks={list.tasks} listId={list.id} key={`${list.id}`} />
           ))
         }
-      </DragDropContext>
 
-      <div>
-        <ActionButton lists={lists} />
+        <div>
+          <ActionButton lists={lists} />
+        </div>
       </div>
-    </div>
+    </DragDropContext>
+
   );
 }
 

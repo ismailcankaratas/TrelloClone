@@ -4,6 +4,7 @@ import { GrAdd } from 'react-icons/gr'
 import TextArea from 'react-textarea-autosize';
 import { useDispatch, useSelector } from "react-redux";
 import { setList } from '../redux/features/listSlice';
+import { v4 as uuid } from 'uuid';
 
 const styles = {
     openForButtonGroup: `flex items-center cursor-pointer rounded py-2 pl-2`
@@ -11,32 +12,31 @@ const styles = {
 const ActionButton = ({ lists, listId }) => {
     const [formOpen, setFormOpen] = useState(false);
     const [inputChange, setInputChange] = useState(null);
-    const stateLists = useSelector(state => state.list.lists)
     const dispatch = useDispatch();
 
     function handleAddList(listTitle) {
+        const unique_id = uuid();
         const localList = JSON.parse(localStorage.getItem("localList"));
         const list =
         {
             title: listTitle,
-            id: localList.length,
+            id: `list-${unique_id}`,
             tasks: []
         };
         if (listTitle) {
             localStorage.setItem("localList", JSON.stringify([...localList, list]));
             dispatch(setList([...localList, list]))
         }
-        console.log(listTitle + " eklendi.")
-
     }
 
     function handleAddTask(listId, taksText) {
+        const unique_id = uuid();
+        const small_id = unique_id.slice(0, 8)
         const localList = JSON.parse(localStorage.getItem("localList"));
-        console.log(listId)
         if (taksText) {
             const newLocalList = localList.map(list => {
                 if (list.id == listId) {
-                    const newTask = { text: taksText, id: list.tasks.length }
+                    const newTask = { text: taksText, id: `task-${small_id}` }
                     return {
                         ...list,
                         tasks: [...list.tasks, newTask]
