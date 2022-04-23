@@ -5,7 +5,8 @@
 
 @layer base {
     body {
-        @apply bg-[#f4f5f7];
+        @apply bg-[#fafbfc];
+        @apply h-[100vh];
         font-family: -apple-system, Roboto;
     }
 }

@@ -29,7 +29,18 @@ export const listSlice = createSlice({
             state.lists = action.payload;
         },
         dragHappened: (state, action) => {
-            const { droppableIdStart, droppableIdEnd, droppableIndexStart, droppableIndexEnd, draggableId } = action.payload;
+            const { droppableIdStart, droppableIdEnd, droppableIndexStart, droppableIndexEnd, draggableId, type } = action.payload;
+
+            if (type === "list") {
+                const newList = [...state.lists];
+                const list = newList.splice(droppableIndexStart, 1);
+                newList.splice(droppableIndexEnd, 0, ...list)
+                setList(JSON.parse(JSON.stringify(newList)));
+                localStorage.setItem("localList", JSON.stringify(newList))
+                console.log(JSON.parse(JSON.stringify(newList)))
+                return
+            }
+
 
             if (droppableIdStart === droppableIdEnd) {
                 const newList = state.lists.find(list => droppableIdStart == list.id);
@@ -46,7 +57,7 @@ export const listSlice = createSlice({
                         }
                     }
                 })
-                setList(JSON.stringify(newLocalList));
+                setList(newLocalList);
                 localStorage.setItem("localList", JSON.stringify(newLocalList))
             }
 
@@ -88,7 +99,8 @@ export const sort = (
     droppableIdEnd,
     droppableIndexStart,
     droppableIndexEnd,
-    draggableId
+    draggableId,
+    type
 ) => (dispatch) => {
     dispatch(dragHappened(
         {
@@ -96,7 +108,8 @@ export const sort = (
             droppableIdEnd,
             droppableIndexStart,
             droppableIndexEnd,
-            draggableId
+            draggableId,
+            type
         }
     ))
 }
