@@ -32,7 +32,6 @@ function App() {
       result.type
     ))
   }
-  console.log(lists)
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <div className="flex flex-no-wrap dark ">
