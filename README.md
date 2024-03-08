@@ -28,10 +28,3 @@
 ```sh
 git clone https://github.com/ismailcankaratas/TrelloClone
 ```
-
-
-## Instalation
-
-```sh
-git clone https://github.com/ismailcankaratas/FoodyTekmer
-```
